@@ -1,0 +1,83 @@
+---
+title: "Hierarchy Analysis"
+author: "Dingjue Ji"
+date: "5/7/2017"
+output: pdf_document
+---
+
+Although the interactomes DIP and MINT do not have regulatory relationship recorded, it might still be useful to check the hierarchy in network structure like directed graphs. The goal is to separate graph in hierarchy, however, based on my limited knowledge, I did not find any available tools to use or handy algorithms to implement on undirected graphs for hierarchical analysis. Note that, HirNet by Cheng C et al. is designed for directed network and here we only use it to catch a glimpse of the network structure and it does not necessarily reflect any regulatory features for the network itself. 
+
+The DIP and MINT network are cut into 6 layers. Fisher's exact is used to test the enrichment of genes with SNP in Carl's genome for different layers. The distribution of genes in the 6 layers is shown as below.
+
+MINT:
+
+```{r echo=FALSE}
+library(tidyr)
+library(ggplot2)
+mint <- cbind(1:6, c(106, 54, 35, 31, 44, 42)/312, c(1361, 839, 608, 459, 502, 823)/4592)
+colnames(mint) <- c('Layer', 'SNP', 'Non-SNP')
+mint <- as.data.frame(mint, stringsAsFactors = FALSE)
+mint <- gather(mint, Group, Count, -Layer)
+mint$Layer <- as.character(mint$Layer)
+blank_theme <- theme_minimal()+
+  theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.border = element_blank(),
+  panel.grid=element_blank(),
+  axis.ticks = element_blank(),
+  axis.text.x = element_blank(),
+  axis.ticks.y = element_blank(),
+  text=element_text(size=14, face="bold"),
+  strip.text.x = element_text(size = 14)
+  )
+myplot <- ggplot(mint) + geom_bar(aes(x='', y=Count, fill = Layer), stat = 'identity')
+myplot <- myplot + coord_polar('y', start = 0) + blank_theme
+myplot <- myplot + geom_text(aes(x='', y=c(1-(Count[1:6]/2 + c(0, cumsum(Count[1:6])[-6])), 
+                                           1-(Count[7:12]/2 + c(0, cumsum(Count[7:12])[-6]))), 
+                                           label = c(Count[1:6]*4592, Count[7:12]*312)), size=5) + facet_wrap(~Group)
+mint_plot <- myplot
+#ggsave(mint_plot, filename = '~/Dropbox/CBB752_Final_Amy_Hussein_Frank/Cytoscape/MINT_Layers.png', width = 8, height = 6)
+plot(mint_plot)
+```
+
+DIP:
+
+```{r echo=FALSE}
+library(tidyr)
+library(ggplot2)
+dip <- cbind(1:6, c(80, 61, 56, 49, 55, 74)/375, c(1093, 691, 581, 548, 662, 950)/4525)
+colnames(dip) <- c('Layer', 'SNP', 'Non-SNP')
+dip <- as.data.frame(dip, stringsAsFactors = FALSE)
+dip <- gather(dip, Group, Count, -Layer)
+dip$Layer <- as.character(dip$Layer)
+blank_theme <- theme_minimal()+
+  theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  panel.border = element_blank(),
+  panel.grid=element_blank(),
+  axis.ticks = element_blank(),
+  axis.text.x = element_blank(),
+  axis.ticks.y = element_blank(),
+  text=element_text(size=14, face="bold"),
+  strip.text.x = element_text(size = 14)
+  )
+myplot <- ggplot(dip) + geom_bar(aes(x='', y=Count, fill = Layer), stat = 'identity')
+myplot <- myplot + coord_polar('y', start = 0) + blank_theme
+myplot <- myplot + geom_text(aes(x='', y=c(1-(Count[1:6]/2 + c(0, cumsum(Count[1:6])[-6])), 
+                                           1-(Count[7:12]/2 + c(0, cumsum(Count[7:12])[-6]))), 
+                                           label = c(Count[1:6]*4525, Count[7:12]*375)), size=5) + facet_wrap(~Group)
+dip_plot <- myplot
+#ggsave(dip_plot, filename = '~/Dropbox/CBB752_Final_Amy_Hussein_Frank/Cytoscape/DIP_Layers.png', width = 8, height = 6)
+plot(dip_plot)
+```
+
+Based on the result of fisher's exact test ($\alpha$ = 0.05), there is no signicant enrichment in any layers for these network, which may indicate genes with SNP are not clustered or scattered in specific patterns compared with those without SNPs. 
+
+```{r, echo=FALSE, results='asis'}
+result <- read.csv('Hierarchy_result.csv', header = TRUE, as.is = TRUE)
+library(xtable)
+print(xtable(result), comment = FALSE, include.rownames = FALSE)
+```
+

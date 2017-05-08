@@ -1,0 +1,8 @@
+DIP.png: Network from DIP. Genes with SNPs will be marked in red and all the others are green. The node size depends on its degree.
+MINT.png: Network from MINT.
+DIP/MINT_degree.png: Histogram for degree centrality for genes with SNPs or without SNPs. 
+DIP/MINT_betweennes.png: Histogram for betweenness centrality.
+The gene name mapping is based on ENSEMBL transcript ID - uniprotKB ID pairs.
+The number of genes recorded in Carl's coding region SNPs file in DIP is 375 and the number in MINT is 312.
+All the analyses are done by Cytoscape. Histograms are plotted in R ggplot2. The original cys files are contained. All the node attributes can be found in both cys and csv files. 
+For the hierarchical analysis, please check the report.
