@@ -15,10 +15,11 @@ Table of Contents
 
 
 **Contributors**
- -Writing:
- -Coding:
- -Pipeline:
+ -Writing: Amy Zhao
+ -Coding: Hussein Mohsen
+ -Pipeline: Dingjue Ji
 
+Please refer to the 3.1 Writeup file (Writeup_3.1.pdf or Writeup_3.1.rmd) for the full details of this final project. 
 ### Introduction:
 
 
